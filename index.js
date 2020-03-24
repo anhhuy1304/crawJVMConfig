@@ -13,7 +13,7 @@ let regexProjectName = /^.*/;
 })();
 
 async function crawlConfigJVM(server) {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   page.setViewport({ width: 1280, height: 720 });
   try {
@@ -29,6 +29,7 @@ async function crawlConfigJVM(server) {
     })
     return project;
   });
+  page.close();
   let urlInfoProject = []
   // urlInfoProject.push('http://10.30.80.16:65081/fi')
   project.forEach(item => {
@@ -60,12 +61,13 @@ async function crawlConfigJVM(server) {
       let xmnFormatNumber = /[0-9]+/.exec(xmn)[0];
       let xmnType = /.$/.exec(xmn)[0];
       let xmnValue = xmnType == 'G'? xmnFormatNumber * 1024: xmnFormatNumber;
-      if(xmnValue *2 > xmxValue){
+      if(xmnValue *2 >= xmxValue){
         console.log(server, project, xmx, xms, xmn)
       }
     }
     // var t1 = performance.now();
     // console.log(t1 - t0)
+    pageDetail.close();
   }
   console.log("end crawl server: " + server+ " ("+urlInfoProject.length+" project)")
 
