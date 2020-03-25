@@ -12,11 +12,10 @@ let regexProjectName = /^(\w+-?)*/;
   for (const index in server) {
     if (server.hasOwnProperty(index)) {
       crawlProjectFromServer(server[index])
-    .then(listProject => detectProjectWrongConfig(server[index], listProject))
-    .catch(error =>{})
+        .then(listProject => detectProjectWrongConfig(server[index], listProject))
+        .catch(error =>{})
     }
   }
-  
 })();
 
 async function detectProjectWrongConfig(server, listProject) {
