@@ -22,6 +22,8 @@ async function detectProjectWrongConfig(server, listProject) {
   const $ = cheerio.load(listProject);
   let project = $('tbody iframe').toArray();
   let urlInfoProject = []
+  
+  urlInfoProject.push('http://10.30.80.16/65111/fi')
   project.forEach(item => {
     urlInfoProject.push(item.attribs.src.replace(/\/{1}bi.*/g, '/fi'));
   })
@@ -59,6 +61,10 @@ async function detectProjectWrongConfig(server, listProject) {
 function crawlProjectFromServer(server) {
   return new Promise((resolve, reject) => {
     http.get('http://' + server + ':65000/sc', (res) => {
+      let timeout = setTimeout(10000, ()=>{
+        clearTimeout(timeout);
+        reject("timeout for connect server: "+ server);
+      })
       const { statusCode } = res;
       const contentType = res.headers['content-type'];
 
@@ -70,6 +76,7 @@ function crawlProjectFromServer(server) {
       if (error) {
         console.error(error.message);
         res.resume();
+        clearTimeout(timeout);
         reject(error);
       }
 
@@ -78,12 +85,15 @@ function crawlProjectFromServer(server) {
       res.on('data', (chunk) => { rawData += chunk; });
       res.on('end', () => {
         try {
+          clearTimeout(timeout);
           resolve(rawData);
         } catch (e) {
+          clearTimeout(timeout);
           reject(e)
         }
       });
     }).on('error', (e) => {
+        clearTimeout(timeout);
         reject(e)
     });
   })
@@ -93,7 +103,11 @@ function crawlProjectFromServer(server) {
 
 function crawlProjectDetail(server, url) {
   return new Promise((resolve, reject) => {
-    http.get(url, (res) => {
+      http.get(url, (res) => {
+      let timeout = setTimeout(10000, ()=>{
+        clearTimeout(timeout);
+        reject('timeout for: ', server, url);
+      })
       const { statusCode } = res;
       const contentType = res.headers['content-type'];
 
@@ -105,7 +119,8 @@ function crawlProjectDetail(server, url) {
       if (error) {
         console.error(error.message);
         res.resume();
-        reject(error)
+        clearTimeout(timeout);
+        reject(error);
       }
 
       res.setEncoding('utf8');
@@ -113,12 +128,15 @@ function crawlProjectDetail(server, url) {
       res.on('data', (chunk) => { rawData += chunk; });
       res.on('end', () => {
         try {
+          clearTimeout(timeout);
           resolve(rawData)
         } catch (e) {
+          clearTimeout(timeout);
           reject(e);
         }
       });
     }).on('error', (e) => {
+      clearTimeout(timeout);
       reject(e);
     });
   })
