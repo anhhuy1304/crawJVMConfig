@@ -13,7 +13,7 @@ let regexProjectName = /^(\w+-?)*/;
     if (server.hasOwnProperty(index)) {
       crawlProjectFromServer(server[index])
         .then(listProject => detectProjectWrongConfig(server[index], listProject))
-        .catch(error =>{console.log(error)})
+        .catch(error =>{})
     }
   }
 })();
@@ -49,7 +49,7 @@ async function detectProjectWrongConfig(server, listProject) {
             console.log(server, project.replace('Index',''), xmx, xms, xmn)
           }
         }
-      }).catch(error =>{console.log(error)})
+      }).catch(error =>{})
     // var t1 = performance.now();
     // console.log(t1 - t0)
   }
