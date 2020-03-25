@@ -155,12 +155,23 @@ let regexProjectName = /^(\w+-?)*/;
 })();
 
 async function detectProjectWrongConfig(server, listProject) {
+<<<<<<< HEAD
     const $ = cheerio.load(listProject);
     let project = $('tbody iframe').toArray();
     let urlInfoProject = []
     project.forEach(item => {
         urlInfoProject.push(item.attribs.src.replace(/\/{1}bi.*/g, '/fi'));
     })
+=======
+  const $ = cheerio.load(listProject);
+  let project = $('tbody iframe').toArray();
+  let urlInfoProject = []
+  
+  urlInfoProject.push('http://10.30.80.16/65111/fi')
+  project.forEach(item => {
+    urlInfoProject.push(item.attribs.src.replace(/\/{1}bi.*/g, '/fi'));
+  })
+>>>>>>> 5115aaa122555ed76740f3eeddb981ce00887b8b
 
 
     console.log("start crawl server: " + server + " (" + urlInfoProject.length + " project)")
@@ -197,6 +208,7 @@ async function detectProjectWrongConfig(server, listProject) {
 }
 
 function crawlProjectFromServer(server) {
+<<<<<<< HEAD
     return new Promise((resolve, reject) => {
         http.get('http://' + server + ':65000/sc', (res) => {
             const { statusCode } = res;
@@ -227,15 +239,15 @@ function crawlProjectFromServer(server) {
             reject(e)
         });
     })
-}
-
-
-
-function crawlProjectDetail(server, url) {
-    return new Promise((resolve, reject) => {
-        http.get(url, (res) => {
-            const { statusCode } = res;
-            const contentType = res.headers['content-type'];
+=======
+  return new Promise((resolve, reject) => {
+    http.get('http://' + server + ':65000/sc', (res) => {
+      let timeout = setTimeout(() =>{
+        clearTimeout(timeout);
+        reject("timeout for connect server: "+ server);
+      },10000);
+      const { statusCode } = res;
+      const contentType = res.headers['content-type'];
 
       let error;
       if (statusCode !== 200) {
@@ -245,9 +257,62 @@ function crawlProjectDetail(server, url) {
       if (error) {
         console.error(error.message);
         res.resume();
-        reject(error)
+        clearTimeout(timeout);
+        reject(error);
       }
 
+      res.setEncoding('utf8');
+      let rawData = '';
+      res.on('data', (chunk) => { rawData += chunk; });
+      res.on('end', () => {
+        try {
+          clearTimeout(timeout);
+          resolve(rawData);
+        } catch (e) {
+          clearTimeout(timeout);
+          reject(e)
+        }
+      });
+    }).on('error', (e) => {
+        clearTimeout(timeout);
+        reject(e)
+    });
+  })
+>>>>>>> 5115aaa122555ed76740f3eeddb981ce00887b8b
+}
+
+
+
+function crawlProjectDetail(server, url) {
+<<<<<<< HEAD
+    return new Promise((resolve, reject) => {
+        http.get(url, (res) => {
+            const { statusCode } = res;
+            const contentType = res.headers['content-type'];
+=======
+  return new Promise((resolve, reject) => {
+      http.get(url, (res) => {
+      let timeout = setTimeout( ()=>{
+        clearTimeout(timeout);
+        reject('timeout for: ', server, url);
+      },10000)
+      const { statusCode } = res;
+      const contentType = res.headers['content-type'];
+>>>>>>> 5115aaa122555ed76740f3eeddb981ce00887b8b
+
+      let error;
+      if (statusCode !== 200) {
+        error = new Error('Request Failed.\n' +
+          `Status Code: ${statusCode}`);
+      }
+      if (error) {
+        console.error(error.message);
+        res.resume();
+        clearTimeout(timeout);
+        reject(error);
+      }
+
+<<<<<<< HEAD
             res.setEncoding('utf8');
             let rawData = '';
             res.on('data', (chunk) => { rawData += chunk; });
@@ -262,4 +327,23 @@ function crawlProjectDetail(server, url) {
             reject(e);
         });
     })
+=======
+      res.setEncoding('utf8');
+      let rawData = '';
+      res.on('data', (chunk) => { rawData += chunk; });
+      res.on('end', () => {
+        try {
+          clearTimeout(timeout);
+          resolve(rawData)
+        } catch (e) {
+          clearTimeout(timeout);
+          reject(e);
+        }
+      });
+    }).on('error', (e) => {
+      clearTimeout(timeout);
+      reject(e);
+    });
+  })
+>>>>>>> 5115aaa122555ed76740f3eeddb981ce00887b8b
 }
