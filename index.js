@@ -61,10 +61,10 @@ async function detectProjectWrongConfig(server, listProject) {
 function crawlProjectFromServer(server) {
   return new Promise((resolve, reject) => {
     http.get('http://' + server + ':65000/sc', (res) => {
-      let timeout = setTimeout(10000, ()=>{
+      let timeout = setTimeout(() =>{
         clearTimeout(timeout);
         reject("timeout for connect server: "+ server);
-      })
+      },10000);
       const { statusCode } = res;
       const contentType = res.headers['content-type'];
 
@@ -104,10 +104,10 @@ function crawlProjectFromServer(server) {
 function crawlProjectDetail(server, url) {
   return new Promise((resolve, reject) => {
       http.get(url, (res) => {
-      let timeout = setTimeout(10000, ()=>{
+      let timeout = setTimeout( ()=>{
         clearTimeout(timeout);
         reject('timeout for: ', server, url);
-      })
+      },10000)
       const { statusCode } = res;
       const contentType = res.headers['content-type'];
 
