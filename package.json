@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/anhhuy1304/crawJVMConfig#readme",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
     "performance": "^1.1.1",
     "puppeteer": "^2.1.1"
   }
