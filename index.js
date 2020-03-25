@@ -210,7 +210,7 @@ function crawlProjectFromServer(server) {
             if (error) {
                 console.error(error.message);
                 res.resume();
-                return;
+                reject(error);
             }
 
             res.setEncoding('utf8');
@@ -237,16 +237,16 @@ function crawlProjectDetail(server, url) {
             const { statusCode } = res;
             const contentType = res.headers['content-type'];
 
-            let error;
-            if (statusCode !== 200) {
-                error = new Error('Request Failed.\n' +
-                    `Status Code: ${statusCode}`);
-            }
-            if (error) {
-                console.error(error.message);
-                res.resume();
-                return;
-            }
+      let error;
+      if (statusCode !== 200) {
+        error = new Error('Request Failed.\n' +
+          `Status Code: ${statusCode}`);
+      }
+      if (error) {
+        console.error(error.message);
+        res.resume();
+        reject(error)
+      }
 
             res.setEncoding('utf8');
             let rawData = '';
